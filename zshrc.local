@@ -1,0 +1,73 @@
+# use 256 colour mode
+
+[[ "$TERM" == "screen" ]] && export TERM="screen-256color"
+[[ "$TERM" == "xterm" ]] && export TERM="xterm-256color"
+
+# determine color for hostname in prompt
+case $HOST in
+    a*s)
+        HOST_COLOUR='%B%F{75}'
+        ;;
+    r*w)
+        HOST_COLOUR='%B%F{156}'
+        ;;
+    i*n)
+        HOST_COLOUR='%B%F{cyan}'
+        ;;
+    i*o|i*d)
+        HOST_COLOUR='%B%F{80}'
+        ;;
+    p*s)
+        HOST_COLOUR='%B%F{227}'
+        ;;
+    m*o)
+        HOST_COLOUR='%B%F{171}'
+        ;;
+    p*o)
+        HOST_COLOUR='%B%F{244}'
+        ;;
+    s*y)
+        HOST_COLOUR='%B%F{152}'
+        ;;
+    *)
+        HOST_COLOUR='%B'
+        ;;
+esac
+
+# set hostname colour in grml prompt theme
+zstyle ':prompt:grml(|-large|-chroot):*:items:host' pre ${HOST_COLOUR}
+zstyle ':prompt:grml(|-large|-chroot):*:items:host' post '%f'
+
+unset HOST_COLOUR
+
+# no colour for user (default: blue)
+if (( EUID != 0 )); then
+    zstyle ':prompt:grml(|-large|-chroot):*:items:user' pre '%B'
+fi
+
+# aliases
+alias -- -='cd -'
+alias cd..='cd ..'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
+
+alias screen='screen -UR'
+alias screenu='screen -dURR'
+alias s=screen
+
+alias pubkeyssh='ssh -o "PreferredAuthentications publickey,keyboard-interactive,password" -o "PubkeyAuthentication yes"'
+alias rpv='rsync --progress -vaur'
+
+# custom functions global
+if [[ -r ${HOME}/.zsh/zshfunctions ]]; then
+    source ${HOME}/.zsh/zshfunctions
+fi
+
+# custom functions local
+if [[ -r ${HOME}/.zsh/zshfunctionsprivate ]]; then
+    source ${HOME}/.zsh/zshfunctionsprivate
+fi
+
